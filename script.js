@@ -57,7 +57,9 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     let deleteButton = document.createElement('button');
     
     tr.id = lp - 1;
-    tr.draggable = true;
+    if(lp != '') {
+        tr.draggable = true;
+    }
     tr.addEventListener('dragstart', (element) => {
         draggedElement = element.currentTarget;
     })
@@ -120,11 +122,11 @@ function printList() {
         table.removeChild(table.lastChild);
     }
 
-
     productList.forEach((element, index) => {
         printRow(index + 1, element.name, element.amount, element.price, Number((element.amount * element.price).toFixed(2)))
         totalSum += element.amount * element.price;
     });
+
     printRow('', '', '', 'RAZEM', totalSum.toFixed(2))
 }
 
