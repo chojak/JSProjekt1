@@ -47,8 +47,15 @@ function printHeaderList(lp, nazwa, ilosc, cena, suma) {
 
 function printRow(lp, nazwa, ilosc, cena, suma) { 
     let table = document.getElementById('paragon');
-
+    
     let tr = document.createElement('tr');
+    let td1 = document.createElement('td');
+    let td2 = document.createElement('td');
+    let td3 = document.createElement('td');
+    let td4 = document.createElement('td');
+    let td5 = document.createElement('td');
+    let deleteButton = document.createElement('button');
+    
     tr.id = lp - 1;
     tr.draggable = true;
     tr.addEventListener('dragstart', (element) => {
@@ -65,48 +72,60 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
 
         printList();
     })
-    
-    let td1 = document.createElement('td');
-    let td2 = document.createElement('td');
-    let td3 = document.createElement('td');
-    let td4 = document.createElement('td');
-    let td5 = document.createElement('td');
-    
-    td2.contentEditable = true;
-    td3.contentEditable = true;
-    td4.contentEditable = true;
 
     td1.innerHTML = lp;
-    tr.appendChild(td1)
+
     td2.innerHTML = nazwa;
+    td2.contentEditable = true;
     td2.addEventListener("keyup", (element) => {
         // onchange not working xD
         productList[element.currentTarget.parentElement.id].name = element.currentTarget.innerHTML;
     });
-    tr.appendChild(td2)
+    
     td3.innerHTML = ilosc;
+    td3.contentEditable = true;
     td3.addEventListener('change', (element) => {
         console.log('text')
     })
-
-    tr.appendChild(td3)
+    
     td4.innerHTML = cena;
-    tr.appendChild(td4)
+    td4.contentEditable = true;
+
     td5.innerHTML = suma;
+    
+    deleteButton.innerHTML = "Usuń"
+    deleteButton.addEventListener('click', (element) => { 
+        id = element.currentTarget.parentElement.id;
+        productList.splice(id, 1);
+        
+        printList();
+    })
+
+    tr.appendChild(td1)
+    tr.appendChild(td2)
+    tr.appendChild(td3)
+    tr.appendChild(td4)
     tr.appendChild(td5)
+    tr.appendChild(deleteButton)
 
     table.appendChild(tr);
 }
 
 function printList() {
     let table = document.getElementById('paragon')
+    let totalSum = 0;
+
+
     while(table.childNodes.length > 1){
         table.removeChild(table.lastChild);
     }
 
+
     productList.forEach((element, index) => {
         printRow(index + 1, element.name, element.amount, element.price, Number((element.amount * element.price).toFixed(2)))
+        totalSum += element.amount * element.price;
     });
+    printRow('', '', '', 'RAZEM', totalSum.toFixed(2))
 }
 
 function addProduct() {
