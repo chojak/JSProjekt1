@@ -17,7 +17,6 @@ var productList = [
 ]
 var draggedElement;
 
-
 function printHeaderList(lp, nazwa, ilosc, cena, suma) {
     let div = document.getElementById('productList');
     let table = document.createElement('table');
@@ -56,42 +55,62 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     let td5 = document.createElement('td');
     let deleteButton = document.createElement('button');
     
-    tr.id = lp - 1;
-    if(lp != '') {
+    if(lp != 'totalSum') {
+        tr.id = lp - 1;
+        td1.innerHTML = lp;
         tr.draggable = true;
+        
+        tr.addEventListener('dragstart', (element) => {
+            draggedElement = element.currentTarget;
+        })
+        tr.addEventListener('dragover', element => {
+            element.preventDefault();
+        })
+        tr.addEventListener('drop', (element) => {
+            let droppedElementId = element.currentTarget.id;
+            let tmp = productList[draggedElement.id];
+            productList[draggedElement.id] = productList[droppedElementId];
+            productList[droppedElementId] = tmp;
+
+            printList();
+        })
     }
-    tr.addEventListener('dragstart', (element) => {
-        draggedElement = element.currentTarget;
-    })
-    tr.addEventListener('dragover', element => {
-        element.preventDefault();
-    })
-    tr.addEventListener('drop', (element) => {
-        let droppedElementId = element.currentTarget.id;
-        let tmp = productList[draggedElement.id];
-        productList[draggedElement.id] = productList[droppedElementId];
-        productList[droppedElementId] = tmp;
-
-        printList();
-    })
-
-    td1.innerHTML = lp;
+    else {
+        tr.id = 'totalSum';
+        td1.innerHTML = '';
+    }
 
     td2.innerHTML = nazwa;
-    td2.contentEditable = true;
+    td2.contentEditable = lp != 'totalSum' ? true : false;
     td2.addEventListener("keyup", (element) => {
         // onchange not working xD
         productList[element.currentTarget.parentElement.id].name = element.currentTarget.innerHTML;
     });
     
     td3.innerHTML = ilosc;
-    td3.contentEditable = true;
-    td3.addEventListener('change', (element) => {
-        console.log('text')
+    td3.contentEditable = lp != 'totalSum' ? true : false;
+    td3.addEventListener('blur', (element) => {
+        if(element.currentTarget.innerHTML <= 0) {
+            alert('Niepoprawna wartość: ilość')
+        }
+        else {
+            productList[element.currentTarget.parentElement.id].amount = element.currentTarget.innerHTML;
+            printList()
+        }
     })
     
     td4.innerHTML = cena;
-    td4.contentEditable = true;
+    td4.contentEditable = lp != 'totalSum' ? true : false;
+    td4.addEventListener('blur', (element) => {
+        if((element.currentTarget.innerHTML * 100) %1 != 0) {
+            console.log(element.currentTarget.innerHTML)
+            alert("Cena może mieć maksymalnie 2 liczby po przecinku")
+        }
+        else {
+            productList[element.currentTarget.parentElement.id].price = element.currentTarget.innerHTML;
+            printList()
+        }
+    })
 
     td5.innerHTML = suma;
     
@@ -127,7 +146,7 @@ function printList() {
         totalSum += element.amount * element.price;
     });
 
-    printRow('', '', '', 'RAZEM', totalSum.toFixed(2))
+    printRow('totalSum', '', '', 'RAZEM', totalSum.toFixed(2))
 }
 
 function addProduct() {
@@ -139,8 +158,8 @@ function addProduct() {
         alert("Nazwa nie może być pusta")
         return
     }
-    if(amount == 0) {
-        alert("Ilość nie może być równa 0")
+    if(amount <= 0) {
+        alert("Niepoprawna wartość: ilość")
         return
     }
     if((price * 100) %1 != 0 ) { 
@@ -148,16 +167,13 @@ function addProduct() {
         return
     }
 
-
-    console.log(productList)
     productList.push({
         name: name,
         amount: amount,
         price: Number(price).toFixed(2),
     })
-    console.log(productList)
     printList();
 }
 
-printHeaderList('LP', 'NAZWA', 'ILOSC', 'CENA', 'SUMA');
+printHeaderList('LP', 'NAZWA', 'ILOŚĆ', 'CENA', 'SUMA');
 printList();
