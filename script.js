@@ -15,6 +15,8 @@ var productList = [
         price: 2.99,
     },
 ]
+var draggedElement;
+
 
 function printHeaderList(lp, nazwa, ilosc, cena, suma) {
     let div = document.getElementById('productList');
@@ -45,8 +47,24 @@ function printHeaderList(lp, nazwa, ilosc, cena, suma) {
 
 function printRow(lp, nazwa, ilosc, cena, suma) { 
     let table = document.getElementById('paragon');
+
     let tr = document.createElement('tr');
     tr.id = lp - 1;
+    tr.draggable = true;
+    tr.addEventListener('dragstart', (element) => {
+        draggedElement = element.currentTarget;
+    })
+    tr.addEventListener('dragover', element => {
+        element.preventDefault();
+    })
+    tr.addEventListener('drop', (element) => {
+        let droppedElementId = element.currentTarget.id;
+        let tmp = productList[draggedElement.id];
+        productList[draggedElement.id] = productList[droppedElementId];
+        productList[droppedElementId] = tmp;
+
+        printList();
+    })
     
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
