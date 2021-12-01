@@ -5,12 +5,12 @@ var productList = [
         price: 2.5,
     },
     {
-        name: "Denaturat",
+        name: "Papier",
         amount: 1,
         price: 5.3,
     },
     {
-        name: "Stern",
+        name: "Piwo",
         amount: 3,
         price: 2.99,
     },
@@ -84,33 +84,44 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     td2.contentEditable = lp != 'totalSum' ? true : false;
     td2.addEventListener("keyup", (element) => {
         // onchange not working xD
-        productList[element.currentTarget.parentElement.id].name = element.currentTarget.innerHTML;
+        if(element.currentTarget.innerHTML == '') {
+            alert("Niepoprawna wartość: nazwa")
+        }
+        else {
+            productList[element.currentTarget.parentElement.id].name = element.currentTarget.innerHTML;
+        }
     });
     
     td3.innerHTML = ilosc;
     td3.contentEditable = lp != 'totalSum' ? true : false;
-    td3.addEventListener('blur', (element) => {
-        if(element.currentTarget.innerHTML <= 0) {
-            alert('Niepoprawna wartość: ilość')
-        }
-        else {
-            productList[element.currentTarget.parentElement.id].amount = element.currentTarget.innerHTML;
-            printList()
-        }
-    })
+    if(lp != 'totalSum') {
+        td3.addEventListener('mouseout', (element) => {
+            if(Number(element.currentTarget.innerHTML) <= 0 || (Number(element.currentTarget.innerHTML) * 100) %1 != 0) {
+                alert('Niepoprawna wartość: ilość')
+            }
+            else {
+                console.log(element.currentTarget.innerHTML)
+                productList[element.currentTarget.parentElement.id].amount = element.currentTarget.innerHTML;
+                printList()
+            }
+        })
+    }
     
     td4.innerHTML = cena;
     td4.contentEditable = lp != 'totalSum' ? true : false;
-    td4.addEventListener('blur', (element) => {
-        if((element.currentTarget.innerHTML * 100) %1 != 0) {
-            console.log(element.currentTarget.innerHTML)
-            alert("Cena może mieć maksymalnie 2 liczby po przecinku")
-        }
-        else {
-            productList[element.currentTarget.parentElement.id].price = element.currentTarget.innerHTML;
-            printList()
-        }
-    })
+    if(lp != 'totalSum') {
+        td4.addEventListener('mouseout', (element) => {
+            if(Number(element.currentTarget.innerHTML) <= 0 || (Number(element.currentTarget.innerHTML) * 100) %1 != 0) {
+                console.log(element.currentTarget.innerHTML)
+                alert("Niepoprawna wartość: cena")
+            }
+            else {
+                console.log(element.currentTarget.innerHTML)
+                productList[element.currentTarget.parentElement.id].price = element.currentTarget.innerHTML;
+                printList()
+            }
+        })
+    }
 
     td5.innerHTML = suma;
     
@@ -127,7 +138,9 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     tr.appendChild(td3)
     tr.appendChild(td4)
     tr.appendChild(td5)
-    tr.appendChild(deleteButton)
+    if(lp != 'totalSum') {
+        tr.appendChild(deleteButton)
+    }
 
     table.appendChild(tr);
 }
@@ -155,15 +168,15 @@ function addProduct() {
     let price = document.getElementById('productPriceInput').value
     
     if(name === '') {
-        alert("Nazwa nie może być pusta")
+        alert("Niepoprawna wartość: nazwa")
         return
     }
-    if(amount <= 0) {
+    if(amount <= 0 || (amount * 100) %1 != 0) {
         alert("Niepoprawna wartość: ilość")
         return
     }
-    if((price * 100) %1 != 0 ) { 
-        alert("Cena może mieć maksymalnie 2 liczby po przecinku")
+    if(price <= 0 || (price * 100) %1 != 0 ) { 
+        alert("Niepoprawna wartość: cena")
         return
     }
 
