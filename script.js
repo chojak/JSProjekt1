@@ -1,13 +1,12 @@
 var productList = [];
 var draggedElement;
+
 function loadLocalStorage() { 
     if(localStorage.productList) { 
         productList = JSON.parse(localStorage.productList)
         console.log(productList)
     }
 }
-document.body.onload = loadLocalStorage();
-
 
 function printHeaderList(lp, nazwa, ilosc, cena, suma) {
     let div = document.getElementById('productList');
@@ -193,5 +192,6 @@ function addProduct() {
     printList();
 }
 
+document.body.onload = loadLocalStorage();
 printHeaderList('LP', 'NAZWA', 'ILOŚĆ', 'CENA', 'SUMA');
 printList();
