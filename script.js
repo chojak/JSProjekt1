@@ -87,18 +87,11 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     td3.contentEditable = lp != 'totalSum' ? true : false;
     if(lp != 'totalSum') {
         td3.addEventListener('mouseout', (element) => {
-            let number = 0;
-            if(element.currentTarget.innerHTML.split('.').length == 2) { 
-                number = Number(element.currentTarget.innerHTML.split('.')[0]) * 100 + Number(element.currentTarget.innerHTML.split('.')[1])
-            }
-            else if(element.currentTarget.innerHTML.split('.').length == 1) { 
-                number = Number(element.currentTarget.innerHTML.split('.'))
-            } 
-            console.log(number)
-            if(Number(element.currentTarget.innerHTML) <= 0 || number%1 != 0 || element.currentTarget.innerHTML.split('.').length > 2) {
+            if(Number(element.currentTarget.innerHTML) <= 0 || (Number(element.currentTarget.innerHTML) * 100) %1 != 0) {
                 alert('Niepoprawna wartość: ilość')
             }
             else {
+                console.log(element.currentTarget.innerHTML)
                 productList[element.currentTarget.parentElement.id].amount = element.currentTarget.innerHTML;
                 printList()
             }
@@ -109,18 +102,12 @@ function printRow(lp, nazwa, ilosc, cena, suma) {
     td4.contentEditable = lp != 'totalSum' ? true : false;
     if(lp != 'totalSum') {
         td4.addEventListener('mouseout', (element) => {
-            let number = 0;
-            if(element.currentTarget.innerHTML.split('.').length == 2) { 
-                number = Number(element.currentTarget.innerHTML.split('.')[0]) * 100 + Number(element.currentTarget.innerHTML.split('.')[1])
-            }
-            else if(element.currentTarget.innerHTML.split('.').length == 1) { 
-                number = Number(element.currentTarget.innerHTML.split('.'))
-            } 
-            console.log(element.currentTarget.innerHTML.split('.'))
-            if(Number(element.currentTarget.innerHTML) <= 0 || number%1 != 0 || element.currentTarget.innerHTML.split('.').length > 2) {
-                alert('Niepoprawna wartość: cena')
+            if(Number(element.currentTarget.innerHTML) <= 0 || (Number(element.currentTarget.innerHTML) * 100) %1 != 0) {
+                console.log(element.currentTarget.innerHTML)
+                alert("Niepoprawna wartość: cena")
             }
             else {
+                console.log(element.currentTarget.innerHTML)
                 productList[element.currentTarget.parentElement.id].price = element.currentTarget.innerHTML;
                 printList()
             }
